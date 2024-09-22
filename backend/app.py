@@ -42,7 +42,8 @@ def get_pokemon_list():
     page_size = int(request.args.get('page_size', 20))
     order = request.args.get('order', 'id')
     direction = request.args.get('direction', 'asc')
-    print(f'get /pokemon/list page: {page}, page_size:{page_size}, order:{order}, direction: {direction}')
+    keyword = request.args.get('keyword', '')
+    print(f'get /pokemon/list page: {page}, page_size:{page_size}, order:{order}, direction: {direction}, keyword:{keyword}')
 
     # Return mocked data
     if order == 'id':
