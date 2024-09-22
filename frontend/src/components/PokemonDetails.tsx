@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Card, CardContent, CardMedia, Typography, Grid, CircularProgress, Container, IconButton, Chip, Box } from '@mui/material';
-import { ChevronLeft, ChevronRight } from '@mui/icons-material';
-import { Male, Female } from '@mui/icons-material';
+import { Card, CardContent, CardMedia, Typography, Grid, CircularProgress, Container, IconButton, Chip, Box, Paper } from '@mui/material';
+import { ChevronLeft, ChevronRight, Male, Female } from '@mui/icons-material';
 import { Bar } from 'react-chartjs-2';
 import 'chart.js/auto';
+import { PokemonDetails } from '../types';
 
 // Color mappings for types and weaknesses
 const typeColors: { [key: string]: string } = {
@@ -42,27 +42,40 @@ const weaknessColors: { [key: string]: string } = {
     Fairy: 'pink'
 };
 
-interface PokemonDetails {
-    id: number;
-    name: string;
-    category: string;
-    weight: number;
-    height: number;
-    abilities: string[];
-    gender: string[];
-    types: string[];
-    weaknesses: string[];
-    stats: {
-        hp: number;
-        attack: number;
-        defense: number;
-        'special-attack': number;
-        'special-defense': number;
-        speed: number;
-    };
-    image_url: string;
-    evolutions: string[];  // Contains evolution chain
-}
+// Helper to render the information in a card-like box with a blue background
+const renderInfoCard = (pokemon: PokemonDetails) => {
+    return (
+        <Paper elevation={3} style={{ backgroundColor: '#e3f2fd', padding: '16px', borderRadius: '10px', marginBottom: '16px', maxWidth: '450px' }}>
+            <Typography variant="h6" gutterBottom style={{ color: '#1565c0' }}>
+                {pokemon.category}
+            </Typography>
+            <Box>
+                <Typography variant="body1">Height: {pokemon.height}m</Typography>
+                <Typography variant="body1">Weight: {pokemon.weight}kg</Typography>
+                <Typography variant="body1">Abilities: {pokemon.abilities.join(', ')}</Typography>
+                <Box display="flex" alignItems="center">
+                    <Typography variant="body1" style={{ marginRight: '8px' }}>Gender:</Typography>
+                    {renderGenderIcons(pokemon.gender)}
+                </Box>
+            </Box>
+        </Paper>
+    );
+};
+
+// render male and female icons with a '|' separator
+const renderGenderIcons = (gender: string[]) => {
+    const hasMale = gender.includes('male');
+    const hasFemale = gender.includes('female');
+
+    return (
+        <Box display="flex" alignItems="center">
+            {hasMale && <><Male style={{ color: 'blue' }} /> </>}
+            {hasMale && hasFemale && <span style={{ margin: '0 8px' }}>|</span>}
+            {hasFemale && <><Female style={{ color: 'red' }} /></>}
+            {!hasMale && !hasFemale && <Typography variant="body1" style={{ whiteSpace: 'nowrap' }}>Genderless</Typography>}
+        </Box>
+    );
+};
 
 function PokemonDetailsPage() {
     const { id } = useParams<{ id: string }>();
@@ -140,33 +153,17 @@ function PokemonDetailsPage() {
         maintainAspectRatio: false
     };
 
-    // Helper to render male/female icons or 'Genderless'
-    const renderGenderIcons = (gender: string[]) => {
-        const hasMale = gender.includes('Male');
-        const hasFemale = gender.includes('Female');
-
-        return (
-            <>
-                {hasMale && <><Male style={{ color: 'blue' }} /> </>}
-                {hasFemale && <><Female style={{ color: 'red' }} /></>}
-                {!hasMale && !hasFemale && <Typography variant="body1">Genderless</Typography>}
-            </>
-        );
-    };
-
     // Render evolution chain
     const renderEvolutions = () => {
         return (
             <Box display="flex" flexWrap="wrap" mt={2}>
                 <Typography variant="h6" gutterBottom>Evolutions:</Typography>
-                {pokemon.evolutions.map((evolution) => (
-                    <Chip
-                        key={evolution}
-                        label={evolution}
-                        clickable
-                        onClick={() => navigate(`/pokemon/${evolution}`)}  // Navigate to the clicked evolution's details page
-                        style={{ marginLeft: '8px', cursor: 'pointer' }}
-                    />
+                {pokemon.evolutions.map((evolution, index) => (
+                    <Box key={evolution.id} display="flex" flexDirection="column" alignItems="center" style={{ marginLeft: '8px', cursor: 'pointer' }} onClick={() => navigate(`/pokemon/${evolution.id}`)}>
+                        <img src={evolution.image_url} alt={evolution.name} style={{ width: '80px', height: '80px' }} />
+                        <Typography variant="body2">#{evolution.id.padStart(4, '0')} {evolution.name}</Typography>
+                        {/*{index < pokemon.evolutions.length - 1 && <Typography variant="body2"> {'>>'} </Typography>}  /!* Display arrow for evolution *!/*/}
+                    </Box>
                 ))}
             </Box>
         );
@@ -206,21 +203,8 @@ function PokemonDetailsPage() {
                             <Typography variant="h4" component="h1" gutterBottom>
                                 #{pokemon.id.toString().padStart(4, '0')} {pokemon.name}
                             </Typography>
-                            <Typography variant="h6" color="textSecondary" gutterBottom>
-                                {pokemon.category}
-                            </Typography>
 
-                            <Typography variant="body1" gutterBottom>
-                                Height: {pokemon.height}m | Weight: {pokemon.weight}kg
-                            </Typography>
-
-                            <Typography variant="body1" gutterBottom>
-                                Abilities: {pokemon.abilities.join(', ')}
-                            </Typography>
-
-                            <Typography variant="body1" gutterBottom>
-                                Gender: {renderGenderIcons(pokemon.gender)}
-                            </Typography>
+                            {renderInfoCard(pokemon)}
 
                             {/* Types */}
                             <Box display="flex" flexWrap="wrap" mb={2}>

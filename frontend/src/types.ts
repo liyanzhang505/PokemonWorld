@@ -26,3 +26,29 @@ export interface PokemonListResponse {
     total_pages: number;
     data: Pokemon[];
 }
+
+export interface PokemonDetails {
+    id: number;
+    name: string;
+    category: string;
+    weight: number;
+    height: number;
+    abilities: string[];
+    gender: string[];
+    types: string[];
+    weaknesses: string[];
+    stats: {
+        hp: number;
+        attack: number;
+        defense: number;
+        'special-attack': number;
+        'special-defense': number;
+        speed: number;
+    };
+    image_url: string;
+    evolutions: {
+        id: string;
+        image_url: string;
+        name: string;
+    }[];
+}
