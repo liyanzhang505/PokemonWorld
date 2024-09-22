@@ -13,8 +13,8 @@ const typeColors: { [key: string]: string } = {
     Poison: 'purple',
     Fire: 'red',
     Water: 'blue',
-    Electric: 'yellow',
-    Psychic: 'cyan',
+    Electric: 'orange',
+    Psychic: 'darkviolet',
     Ice: 'lightblue',
     Flying: 'skyblue',
     Bug: 'limegreen',
@@ -30,19 +30,19 @@ const typeColors: { [key: string]: string } = {
 const weaknessColors: { [key: string]: string } = {
     Fire: 'red',
     Ice: 'blue',
-    Psychic: 'cyan',
+    Psychic: 'darkviolet',
     Flying: 'skyblue',
     Bug: 'limegreen',
     Poison: 'purple',
     Ground: 'brown',
     Rock: 'gray',
     Water: 'blue',
-    Electric: 'yellow',
+    Electric: 'orange',
     Dark: 'darkgray',
     Fairy: 'pink'
 };
 
-// Helper to render the information in a card-like box with a blue background
+// Render the information in a card-like box with a blue background
 const renderInfoCard = (pokemon: PokemonDetails) => {
     return (
         <Paper elevation={3} style={{ backgroundColor: '#e3f2fd', padding: '16px', borderRadius: '10px', marginBottom: '16px', maxWidth: '450px' }}>
