@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 
+// Interface defining the props for the SearchBar component
 interface SearchBarProps {
     onSearch: (keyword: string) => void;
     style?: React.CSSProperties; // Allows passing style properties
 }
 
+// SearchBar component for searching Pokémon by name or ID
 function SearchBar({ onSearch, style }: SearchBarProps) {
     const [keyword, setKeyword] = useState('');
 
+    // Function to handle the search operation when the search button is clicked
     const handleSearch = () => {
         onSearch(keyword);
     };
