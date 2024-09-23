@@ -1,0 +1,69 @@
+/* Image flash effect on hover */
+.pokemon-card {
+    transition: transform 0.3s ease;
+}
+
+.pokemon-card:hover {
+    transform: scale(1.05); /* Scale up effect */
+}
+
+.pokemon-card:hover .pokemon-image {
+    animation: flash 0.5s; /* Flash effect */
+}
+
+/* Keyframes for the image flash animation */
+@keyframes flash {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+/* Ensure hand pointer on hover */
+.pokemon-card:hover {
+    cursor: pointer;
+}
+
+
+/* Make the pagination arrow buttons' background and border transparent,
+   and increase the distance between the arrows and page numbers */
+.page-link.arrow-only {
+    background-color: transparent; /* Transparent background */
+    border: none; /* Remove border */
+    font-size: 1.5rem; /* Keep arrow symbol size */
+    color: #007bff; /* Default arrow color */
+    padding: 0; /* Remove button padding */
+}
+
+/* Explicitly set margins for both the left and right arrows */
+.page-item:first-child .page-link.arrow-only {
+    margin-right: 10px; /* Add margin to the right of the left arrow */
+}
+
+.page-item:last-child .page-link.arrow-only {
+    margin-left: 10px; /* Add margin to the left of the right arrow */
+}
+
+.page-link.arrow-only:hover {
+    color: #0056b3; /* Arrow color on hover */
+    text-decoration: none; /* Remove text underline on hover */
+}
+
+/* Default pagination button styles */
+.page-link {
+    padding: 0.5rem 0.75rem; /* Default padding for pagination buttons */
+    border-radius: 0.25rem; /* Rounded corners for buttons */
+}
+
+/* Align pagination buttons and avoid misalignment between numbers and arrows */
+.pagination {
+    margin: 1rem 0; /* Margin between pagination and surrounding content */
+    display: flex; /* Ensure pagination elements align properly */
+    justify-content: center; /* Center the pagination controls */
+}
+
+/* Active page style */
+.page-item.active .page-link {
+    background-color: #007bff; /* Background color for the active page */
+    border-color: #007bff; /* Border color for the active page */
+    color: white; /* Text color for the active page */
+}

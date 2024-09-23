@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for programmatic navigation
 import { Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { PokemonListResponse, Pokemon } from '../types';
-import { ChevronLeft, ChevronRight } from '@mui/icons-material';
+import './PokemonList.css';
 
 // SearchBar component definition
 function SearchBar({ onSearch, style }: { onSearch: (keyword: string) => void; style?: React.CSSProperties }) {
@@ -59,6 +59,7 @@ function PokemonList() {
     const [searchKeyword, setSearchKeyword] = useState('');
     const [currentPageGroup, setCurrentPageGroup] = useState(1);
     const pagesPerGroup = 10;
+    const navigate = useNavigate(); // Use useNavigate to navigate on card click
 
     // Fetch Pokemon list with updated parameters
     const fetchPokemonList = useCallback(async () => {
@@ -92,6 +93,11 @@ function PokemonList() {
         setCurrentPageGroup(1); // Also reset page group to the first group
     };
 
+    // Handle card click to navigate to the details page
+    const handleCardClick = (id: number) => {
+        navigate(`/pokemon/${id}`);
+    };
+
     // Calculate start and end page for pagination
     const startPage = (currentPageGroup - 1) * pagesPerGroup + 1;
     const endPage = Math.min(currentPageGroup * pagesPerGroup, totalPages);
@@ -100,11 +106,14 @@ function PokemonList() {
     const PaginationControls = () => (
         <nav>
             <ul className="pagination justify-content-center">
-                {/* Show the '<<' button for previous page groups */}
+                {/* Show the '<<' button for previous page groups without the button border */}
                 {currentPageGroup > 1 && (
                     <li className="page-item">
-                        <button className="page-link" onClick={() => setCurrentPageGroup(currentPageGroup - 1)}>
-                            <ChevronLeft />
+                        <button
+                            className="page-link arrow-only"
+                            onClick={() => setCurrentPageGroup(currentPageGroup - 1)}
+                        >
+                            «
                         </button>
                     </li>
                 )}
@@ -118,11 +127,14 @@ function PokemonList() {
                     </li>
                 ))}
 
-                {/* Show the '>>' button for next page groups */}
+                {/* Show the '>>' button for next page groups without the button border */}
                 {endPage < totalPages && (
                     <li className="page-item">
-                        <button className="page-link" onClick={() => setCurrentPageGroup(currentPageGroup + 1)}>
-                            <ChevronRight />
+                        <button
+                            className="page-link arrow-only"
+                            onClick={() => setCurrentPageGroup(currentPageGroup + 1)}
+                        >
+                            »
                         </button>
                     </li>
                 )}
@@ -180,14 +192,22 @@ function PokemonList() {
             {loading ? <p>Loading...</p> : (
                 <div className="row">
                     {pokemonList.map(pokemon => (
-                        <div key={pokemon.id} className="col-md-3 mb-4">
-                            <div className="card">
+                        <div
+                            key={pokemon.id}
+                            className="col-md-3 mb-4"
+                            onClick={() => handleCardClick(pokemon.id)} // Handle card click
+                            style={{ cursor: 'pointer' }} // Hand pointer on hover
+                        >
+                            <div className="card pokemon-card">
                                 {/* Pokemon image */}
-                                <img src={pokemon.image_url} className="card-img-top" alt={pokemon.name} />
+                                <img
+                                    src={pokemon.image_url}
+                                    className="card-img-top pokemon-image"
+                                    alt={pokemon.name}
+                                />
                                 <div className="card-body text-center">
                                     <h6 className="card-subtitle mb-2 text-muted">#{pokemon.id.toString().padStart(4, '0')}</h6>
                                     <h5 className="card-title">{pokemon.name}</h5>
-                                    <Link to={`/pokemon/${pokemon.id}`} className="btn btn-primary">View Details</Link>
                                 </div>
                             </div>
                         </div>
