@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for programmatic navigation
+import { useNavigate } from 'react-router-dom';
 import { Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { PokemonListResponse, Pokemon } from '../types';
 import './PokemonList.css';
@@ -13,7 +13,6 @@ function SearchBar({ onSearch, style }: { onSearch: (keyword: string) => void; s
         onSearch(keyword);
     };
 
-    // Handle Enter key press
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
             handleSearch();
@@ -22,18 +21,16 @@ function SearchBar({ onSearch, style }: { onSearch: (keyword: string) => void; s
 
     return (
         <div className="input-group" style={style}>
-            {/* Search input field */}
             <input
                 type="text"
                 className="form-control"
                 placeholder="Search Pokemon by name or id"
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}
-                onKeyDown={handleKeyDown} // Listen for Enter key
+                onKeyDown={handleKeyDown}
                 style={{ height: '56px' }}
             />
             <div className="input-group-append">
-                {/* Search button */}
                 <button
                     className="btn btn-outline-secondary"
                     type="button"
@@ -51,7 +48,7 @@ function SearchBar({ onSearch, style }: { onSearch: (keyword: string) => void; s
 function PokemonList() {
     const [pokemonList, setPokemonList] = useState<Pokemon[]>([]);
     const [loading, setLoading] = useState(true);
-    const [page, setPage] = useState(1);
+    const [page, setPage] = useState(1); // Default to page 1
     const [pageSize] = useState(8);
     const [totalPages, setTotalPages] = useState(1);
     const [sortField, setSortField] = useState('id');
@@ -59,10 +56,11 @@ function PokemonList() {
     const [searchKeyword, setSearchKeyword] = useState('');
     const [currentPageGroup, setCurrentPageGroup] = useState(1);
     const pagesPerGroup = 10;
-    const navigate = useNavigate(); // Use useNavigate to navigate on card click
+    const navigate = useNavigate();
 
     // Fetch Pokemon list with updated parameters
     const fetchPokemonList = useCallback(async () => {
+        setLoading(true);  // Ensure loading state is set when fetching data
         try {
             const response = await axios.get<PokemonListResponse>(
                 `http://127.0.0.1:8080/pokemon/list?page=${page}&page_size=${pageSize}&order=${sortField}&direction=${sortOrder}&keyword=${searchKeyword}`
@@ -72,25 +70,39 @@ function PokemonList() {
             setLoading(false);
         } catch (error) {
             console.error('Error fetching Pokemon list:', error);
+            setLoading(false);  // Stop loading on error
         }
     }, [page, pageSize, sortField, sortOrder, searchKeyword]);
 
-    // UseEffect to trigger fetch on page load or parameter change
+    // Trigger fetch when page, searchKeyword, sortField, or sortOrder changes
     useEffect(() => {
         fetchPokemonList();
-    }, [fetchPokemonList]);
+    }, [page, searchKeyword, sortField, sortOrder, fetchPokemonList]);
 
     // Handle page change for pagination
     const handlePageChange = (newPage: number) => {
-        setPage(newPage);
-        setLoading(true);
+        setPage(newPage); // Update the current page
     };
 
     // Handle search input from SearchBar component
     const handleSearch = (keyword: string) => {
-        setSearchKeyword(keyword);
+        setSearchKeyword(keyword); // Update search keyword
         setPage(1); // Reset to first page after search
-        setCurrentPageGroup(1); // Also reset page group to the first group
+        setCurrentPageGroup(1); // Reset page group to the first group
+    };
+
+    // Handle sorting change
+    const handleSortChange = (newSortField: string) => {
+        setSortField(newSortField);
+        setPage(1); // Reset to first page when changing sort
+        setCurrentPageGroup(1); // Reset page group
+    };
+
+    // Handle sort order change
+    const handleOrderChange = (newSortOrder: string) => {
+        setSortOrder(newSortOrder);
+        setPage(1); // Reset to first page when changing sort order
+        setCurrentPageGroup(1); // Reset page group
     };
 
     // Handle card click to navigate to the details page
@@ -106,7 +118,6 @@ function PokemonList() {
     const PaginationControls = () => (
         <nav>
             <ul className="pagination justify-content-center">
-                {/* Show the '<<' button for previous page groups without the button border */}
                 {currentPageGroup > 1 && (
                     <li className="page-item">
                         <button
@@ -118,7 +129,6 @@ function PokemonList() {
                     </li>
                 )}
 
-                {/* Show page numbers within the current group */}
                 {Array.from({ length: endPage - startPage + 1 }, (_, idx) => (
                     <li key={startPage + idx} className={`page-item ${page === startPage + idx ? 'active' : ''}`}>
                         <button className="page-link" onClick={() => handlePageChange(startPage + idx)}>
@@ -127,7 +137,6 @@ function PokemonList() {
                     </li>
                 ))}
 
-                {/* Show the '>>' button for next page groups without the button border */}
                 {endPage < totalPages && (
                     <li className="page-item">
                         <button
@@ -146,15 +155,13 @@ function PokemonList() {
         <div>
             <h1 className="mb-4">Pokédex</h1>
 
-            {/* Sort options and search bar in the same row */}
             <div className="d-flex justify-content-between align-items-end my-3">
                 <div className="d-flex">
-                    {/* Sort by field dropdown */}
                     <FormControl variant="outlined" className="mr-3" style={{ minWidth: 150, height: '56px' }}>
                         <InputLabel>Sort By</InputLabel>
                         <Select
                             value={sortField}
-                            onChange={(e) => setSortField(e.target.value as string)}
+                            onChange={(e) => handleSortChange(e.target.value as string)}
                             label="Sort By"
                             style={{ height: '56px' }}
                         >
@@ -164,12 +171,11 @@ function PokemonList() {
                         </Select>
                     </FormControl>
 
-                    {/* Sort order dropdown */}
                     <FormControl variant="outlined" className="mr-3" style={{ minWidth: 150, height: '56px' }}>
                         <InputLabel>Order</InputLabel>
                         <Select
                             value={sortOrder}
-                            onChange={(e) => setSortOrder(e.target.value as string)}
+                            onChange={(e) => handleOrderChange(e.target.value as string)}
                             label="Order"
                             style={{ height: '56px' }}
                         >
@@ -179,27 +185,23 @@ function PokemonList() {
                     </FormControl>
                 </div>
 
-                {/* Search bar */}
                 <div className="flex-grow-1 ml-3">
                     <SearchBar onSearch={handleSearch} style={{ height: '56px' }} />
                 </div>
             </div>
 
-            {/* Pagination controls at the top */}
             <PaginationControls />
 
-            {/* Pokémon list */}
             {loading ? <p>Loading...</p> : (
                 <div className="row">
                     {pokemonList.map(pokemon => (
                         <div
                             key={pokemon.id}
                             className="col-md-3 mb-4"
-                            onClick={() => handleCardClick(pokemon.id)} // Handle card click
-                            style={{ cursor: 'pointer' }} // Hand pointer on hover
+                            onClick={() => handleCardClick(pokemon.id)}
+                            style={{ cursor: 'pointer' }}
                         >
                             <div className="card pokemon-card">
-                                {/* Pokemon image */}
                                 <img
                                     src={pokemon.image_url}
                                     className="card-img-top pokemon-image"
@@ -215,7 +217,6 @@ function PokemonList() {
                 </div>
             )}
 
-            {/* Pagination controls at the bottom */}
             <PaginationControls />
         </div>
     );
