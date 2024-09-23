@@ -13,17 +13,27 @@ function SearchBar({ onSearch, style }: { onSearch: (keyword: string) => void; s
         onSearch(keyword);
     };
 
+    // Handle Enter key press
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            handleSearch();
+        }
+    };
+
     return (
         <div className="input-group" style={style}>
+            {/* Search input field */}
             <input
                 type="text"
                 className="form-control"
                 placeholder="Search Pokemon by name or id"
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}
+                onKeyDown={handleKeyDown} // Listen for Enter key
                 style={{ height: '56px' }}
             />
             <div className="input-group-append">
+                {/* Search button */}
                 <button
                     className="btn btn-outline-secondary"
                     type="button"
@@ -50,6 +60,7 @@ function PokemonList() {
     const [currentPageGroup, setCurrentPageGroup] = useState(1);
     const pagesPerGroup = 10;
 
+    // Fetch Pokemon list with updated parameters
     const fetchPokemonList = useCallback(async () => {
         try {
             const response = await axios.get<PokemonListResponse>(
@@ -63,20 +74,25 @@ function PokemonList() {
         }
     }, [page, pageSize, sortField, sortOrder, searchKeyword]);
 
+    // UseEffect to trigger fetch on page load or parameter change
     useEffect(() => {
         fetchPokemonList();
     }, [fetchPokemonList]);
 
+    // Handle page change for pagination
     const handlePageChange = (newPage: number) => {
         setPage(newPage);
         setLoading(true);
     };
 
+    // Handle search input from SearchBar component
     const handleSearch = (keyword: string) => {
         setSearchKeyword(keyword);
-        setPage(1);
+        setPage(1); // Reset to first page after search
+        setCurrentPageGroup(1); // Also reset page group to the first group
     };
 
+    // Calculate start and end page for pagination
     const startPage = (currentPageGroup - 1) * pagesPerGroup + 1;
     const endPage = Math.min(currentPageGroup * pagesPerGroup, totalPages);
 
@@ -116,11 +132,12 @@ function PokemonList() {
 
     return (
         <div>
-            <h1 className="mb-4">Pokemon List</h1>
+            <h1 className="mb-4">Pokédex</h1>
 
             {/* Sort options and search bar in the same row */}
             <div className="d-flex justify-content-between align-items-end my-3">
                 <div className="d-flex">
+                    {/* Sort by field dropdown */}
                     <FormControl variant="outlined" className="mr-3" style={{ minWidth: 150, height: '56px' }}>
                         <InputLabel>Sort By</InputLabel>
                         <Select
@@ -135,6 +152,7 @@ function PokemonList() {
                         </Select>
                     </FormControl>
 
+                    {/* Sort order dropdown */}
                     <FormControl variant="outlined" className="mr-3" style={{ minWidth: 150, height: '56px' }}>
                         <InputLabel>Order</InputLabel>
                         <Select
@@ -149,6 +167,7 @@ function PokemonList() {
                     </FormControl>
                 </div>
 
+                {/* Search bar */}
                 <div className="flex-grow-1 ml-3">
                     <SearchBar onSearch={handleSearch} style={{ height: '56px' }} />
                 </div>
@@ -163,6 +182,7 @@ function PokemonList() {
                     {pokemonList.map(pokemon => (
                         <div key={pokemon.id} className="col-md-3 mb-4">
                             <div className="card">
+                                {/* Pokemon image */}
                                 <img src={pokemon.image_url} className="card-img-top" alt={pokemon.name} />
                                 <div className="card-body text-center">
                                     <h6 className="card-subtitle mb-2 text-muted">#{pokemon.id.toString().padStart(4, '0')}</h6>
