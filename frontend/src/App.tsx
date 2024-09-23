@@ -9,6 +9,7 @@ function App() {
             <div className="container mt-5">
                 <Routes>
                     <Route path="/" element={<PokemonList />} />
+                    <Route path="/pokemon" element={<PokemonList />} />
                     <Route path="/pokemon/:id" element={<PokemonDetails />} />
                 </Routes>
             </div>

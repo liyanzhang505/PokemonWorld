@@ -172,33 +172,43 @@ function PokemonDetailsPage() {
     return (
         <Container>
             <Card>
-                <Grid container>
-                    {/* Left side: Image + navigation arrows */}
-                    <Grid item xs={12} md={4} style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                        <IconButton
-                            onClick={handlePrevious}
-                            style={{ position: 'absolute', left: 0, top: '50%', transform: 'translateY(-50%)', animation: 'blinker 1.5s infinite' }}
-                        >
-                            <ChevronLeft fontSize="large" />
-                        </IconButton>
+                <Grid container spacing={2}>
+                    {/* Left side: Image + navigation arrows + Stats */}
+                    <Grid item xs={12} md={4} container direction="column" justifyContent="center" alignItems="center" style={{ position: 'relative', height: '100%' }}>
+                        <Box style={{ position: 'relative' }}>
+                            <IconButton
+                                onClick={handlePrevious}
+                                style={{ position: 'absolute', left: '0', top: '50%', transform: 'translateY(-50%)', animation: 'blinker 1.5s infinite' }}
+                            >
+                                <ChevronLeft fontSize="large" />
+                            </IconButton>
 
-                        <CardMedia
-                            component="img"
-                            image={pokemon.image_url}
-                            alt={pokemon.name}
-                            style={{ padding: '20px', maxWidth: '100%' }}
-                        />
+                            <CardMedia
+                                component="img"
+                                image={pokemon.image_url}
+                                alt={pokemon.name}
+                                style={{ padding: '20px', maxWidth: '100%' }}
+                            />
 
-                        <IconButton
-                            onClick={handleNext}
-                            style={{ position: 'absolute', right: 0, top: '50%', transform: 'translateY(-50%)', animation: 'blinker 1.5s infinite' }}
-                        >
-                            <ChevronRight fontSize="large" />
-                        </IconButton>
+                            <IconButton
+                                onClick={handleNext}
+                                style={{ position: 'absolute', right: '0', top: '50%', transform: 'translateY(-50%)', animation: 'blinker 1.5s infinite' }}
+                            >
+                                <ChevronRight fontSize="large" />
+                            </IconButton>
+                        </Box>
+
+                        {/* Stats (moved under the Pokemon image) */}
+                        <Box style={{ width: '100%', maxWidth: '400px', marginTop: '20px' }}>
+                            <Typography variant="h6" gutterBottom>Stats</Typography>
+                            <Box style={{ padding: '20px 0' }}>
+                                <Bar data={statsData} options={chartOptions} />
+                            </Box>
+                        </Box>
                     </Grid>
 
                     {/* Right side: Information */}
-                    <Grid item xs={12} md={8}>
+                    <Grid item xs={12} md={8} container direction="column" justifyContent="center" style={{ flexGrow: 1, paddingLeft: '20px' }}>
                         <CardContent>
                             <Typography variant="h4" component="h1" gutterBottom>
                                 #{pokemon.id.toString().padStart(4, '0')} {pokemon.name}
@@ -240,13 +250,6 @@ function PokemonDetailsPage() {
 
                             {/* Evolutions */}
                             {renderEvolutions()}
-
-                            {/* Stats */}
-                            <Typography variant="h6" gutterBottom>Stats</Typography>
-                            <Box style={{ width: '100%', maxWidth: '400px', margin: '0', paddingTop: '20px' }}>
-                                <Bar data={statsData} options={chartOptions} />
-                            </Box>
-
                         </CardContent>
                     </Grid>
                 </Grid>
