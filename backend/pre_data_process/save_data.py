@@ -1,30 +1,32 @@
 import sqlite3
-import requests
-import json  # Import the json module to handle JSON serialization and deserialization
+import json
 
-# Create a connection to the SQLite database
-conn = sqlite3.connect('pokemon.db')
-c = conn.cursor()
+def create_db(db_path):
+    # Create a connection to the SQLite database
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
 
-# Create a table to store Pokemon data with evolution chain as a JSON string
-c.execute('''
-CREATE TABLE IF NOT EXISTS pokemon (
-    id TEXT PRIMARY KEY,
-    name TEXT,
-    category TEXT,
-    weight REAL,
-    height REAL,
-    abilities TEXT,
-    gender TEXT, 
-    types TEXT,
-    weaknesses TEXT,
-    stats TEXT,
-    image_url TEXT,
-    evolutions TEXT
-)
-''')
+    # Create a table to store Pokemon data with evolution chain as a JSON string
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS pokemon (
+        id TEXT PRIMARY KEY,
+        name TEXT,
+        category TEXT,
+        weight REAL,
+        height REAL,
+        abilities TEXT,
+        gender TEXT, 
+        types TEXT,
+        weaknesses TEXT,
+        stats TEXT,
+        image_url TEXT,
+        evolutions TEXT
+    )
+    ''')
+    return conn, cursor
 
-def save_pokemon_data_in_db(pokemon_data):
+def save_pokemon_data_in_db(pokemon_data, db_path):
+    conn, cursor = create_db(db_path)
     for pokemon in pokemon_data:
         # Convert id to a 4-digit string with leading zeros
         pokemon_id_str = str(pokemon['id']).zfill(4)
@@ -44,7 +46,7 @@ def save_pokemon_data_in_db(pokemon_data):
         gender_json = json.dumps(pokemon['gender'])
 
         # Insert data into the SQLite database
-        c.execute('''
+        cursor.execute('''
         INSERT OR REPLACE INTO pokemon (id, name, category, weight, height, abilities, gender, types, weaknesses, stats, image_url, evolutions)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (

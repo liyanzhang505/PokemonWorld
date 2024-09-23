@@ -4,16 +4,20 @@ import sqlite3
 import sys
 import os
 import json
+from config import DB_PATH, PORT, HOST
 
+# Start Flask web application
 app = Flask(__name__)
-CORS(app)  # Allow cross-origin access
+# allow cross-origin access
+CORS(app)
 
-DB_PATH = 'pokemon.db'
+
 
 # Connect to the SQLite database
 def get_db_connection():
     conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row  # This allows us to get results as dictionaries
+    # This allows us to get results as dictionaries
+    conn.row_factory = sqlite3.Row
     return conn
 
 # Query the database and convert to a list of dicts
@@ -119,4 +123,4 @@ if __name__ == '__main__':
     check_db_for_data()
 
     # Start the Flask application
-    app.run(port=8080)
+    app.run(host=HOST, port=PORT)
