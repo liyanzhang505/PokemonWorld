@@ -94,6 +94,8 @@ def get_pokemon(offset=0, limit=2000):
 
         # Basic Pokemon information
         pokemon_id = pokemon_details['id']
+        if pokemon_id > 10000:
+            continue
         name = pokemon_details['name']
         height = pokemon_details['height'] / 10.0  # Convert to meters
         weight = pokemon_details['weight'] / 10.0  # Convert to kilograms
@@ -177,6 +179,7 @@ def get_pokemon(offset=0, limit=2000):
             'image_url': image_url
         })
 
+    print('------Starting get evolution chain, please wait------')
     # All Pokemon data is fetched, update the evolution chains by looking up in pokemon_data_by_name
     for pokemon in all_pokemon_data:
         species_name = pokemon['name']
@@ -185,6 +188,7 @@ def get_pokemon(offset=0, limit=2000):
             evolution_chain_url = pokemon_species_details['evolution_chain']['url']
             evolutions = get_evolution_chain(evolution_chain_url)
             pokemon['evolutions'] = evolutions  # Update evolution chain with id and image_url
+            print(f'name:{species_name}, evolutions:{evolutions}')
         else:
             pokemon['evolutions'] = []
 
