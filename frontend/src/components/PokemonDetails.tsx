@@ -7,6 +7,9 @@ import { Bar } from 'react-chartjs-2';
 import 'chart.js/auto';
 import { PokemonDetails } from '../types';
 
+// Utility function to capitalise the first letter of a string
+const capitaliseFirstLetter = (str: string) => str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+
 // Color mappings for types and weaknesses
 const typeColors: { [key: string]: string } = {
     Grass: 'green',
@@ -47,12 +50,12 @@ const renderInfoCard = (pokemon: PokemonDetails) => {
     return (
         <Paper elevation={3} style={{ backgroundColor: '#e3f2fd', padding: '16px', borderRadius: '10px', marginBottom: '16px', maxWidth: '450px' }}>
             <Typography variant="h6" gutterBottom style={{ color: '#1565c0' }}>
-                {pokemon.category}
+                {capitaliseFirstLetter(pokemon.category)}
             </Typography>
             <Box>
                 <Typography variant="body1">Height: {pokemon.height}m</Typography>
                 <Typography variant="body1">Weight: {pokemon.weight}kg</Typography>
-                <Typography variant="body1">Abilities: {pokemon.abilities.join(', ')}</Typography>
+                <Typography variant="body1">Abilities: {pokemon.abilities.map(a => capitaliseFirstLetter(a)).join(', ')}</Typography>
                 <Box display="flex" alignItems="center">
                     <Typography variant="body1" style={{ marginRight: '8px' }}>Gender:</Typography>
                     {renderGenderIcons(pokemon.gender)}
@@ -160,8 +163,8 @@ function PokemonDetailsPage() {
                 <Typography variant="h6" gutterBottom>Evolutions:</Typography>
                 {pokemon.evolutions.map((evolution, index) => (
                     <Box key={evolution.id} display="flex" flexDirection="column" alignItems="center" style={{ marginLeft: '8px', cursor: 'pointer' }} onClick={() => navigate(`/pokemon/${evolution.id}`)}>
-                        <img src={evolution.image_url} alt={evolution.name} style={{ width: '80px', height: '80px' }} />
-                        <Typography variant="body2">#{evolution.id.padStart(4, '0')} {evolution.name}</Typography>
+                        <img src={evolution.image_url} alt={capitaliseFirstLetter(evolution.name)} style={{ width: '80px', height: '80px' }} />
+                        <Typography variant="body2">#{evolution.id.padStart(4, '0')} {capitaliseFirstLetter(evolution.name)}</Typography>
                         {/*{index < pokemon.evolutions.length - 1 && <Typography variant="body2"> {'>>'} </Typography>}  /!* Display arrow for evolution *!/*/}
                     </Box>
                 ))}
@@ -186,7 +189,7 @@ function PokemonDetailsPage() {
                             <CardMedia
                                 component="img"
                                 image={pokemon.image_url}
-                                alt={pokemon.name}
+                                alt={capitaliseFirstLetter(pokemon.name)}
                                 style={{ padding: '20px', maxWidth: '100%' }}
                             />
 
@@ -211,7 +214,7 @@ function PokemonDetailsPage() {
                     <Grid item xs={12} md={8} container direction="column" justifyContent="center" style={{ flexGrow: 1, paddingLeft: '20px' }}>
                         <CardContent>
                             <Typography variant="h4" component="h1" gutterBottom>
-                                #{pokemon.id.toString().padStart(4, '0')} {pokemon.name}
+                                #{pokemon.id.toString().padStart(4, '0')} {capitaliseFirstLetter(pokemon.name)}
                             </Typography>
 
                             {renderInfoCard(pokemon)}
@@ -222,7 +225,7 @@ function PokemonDetailsPage() {
                                 {pokemon.types.map(type => (
                                     <Chip
                                         key={type}
-                                        label={type}
+                                        label={capitaliseFirstLetter(type)}
                                         style={{
                                             marginLeft: '8px',
                                             backgroundColor: typeColors[type.charAt(0).toUpperCase() + type.slice(1).toLowerCase()] || 'gray',
@@ -238,7 +241,7 @@ function PokemonDetailsPage() {
                                 {pokemon.weaknesses.map(weakness => (
                                     <Chip
                                         key={weakness}
-                                        label={weakness}
+                                        label={capitaliseFirstLetter(weakness)}
                                         style={{
                                             marginLeft: '8px',
                                             backgroundColor: weaknessColors[weakness.charAt(0).toUpperCase() + weakness.slice(1).toLowerCase()] || 'gray',

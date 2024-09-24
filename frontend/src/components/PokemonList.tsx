@@ -5,6 +5,9 @@ import { Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { PokemonListResponse, Pokemon } from '../types';
 import './PokemonList.css';
 
+// Utility function to capitalize the first letter of a string
+const capitalizeFirstLetter = (str: string) => str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+
 // SearchBar component definition
 function SearchBar({ onSearch, style }: { onSearch: (keyword: string) => void; style?: React.CSSProperties }) {
     const [keyword, setKeyword] = useState('');
@@ -49,7 +52,7 @@ function PokemonList() {
     const [pokemonList, setPokemonList] = useState<Pokemon[]>([]);
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1); // Default to page 1
-    const [pageSize] = useState(8);
+    const [pageSize] = useState(16);
     const [totalPages, setTotalPages] = useState(1);
     const [sortField, setSortField] = useState('id');
     const [sortOrder, setSortOrder] = useState('asc');
@@ -168,6 +171,7 @@ function PokemonList() {
                             <MenuItem value="id">ID</MenuItem>
                             <MenuItem value="name">Name</MenuItem>
                             <MenuItem value="weight">Weight</MenuItem>
+                            <MenuItem value="height">Height</MenuItem> {/* Added Height */}
                         </Select>
                     </FormControl>
 
@@ -209,7 +213,7 @@ function PokemonList() {
                                 />
                                 <div className="card-body text-center">
                                     <h6 className="card-subtitle mb-2 text-muted">#{pokemon.id.toString().padStart(4, '0')}</h6>
-                                    <h5 className="card-title">{pokemon.name}</h5>
+                                    <h5 className="card-title">{capitalizeFirstLetter(pokemon.name)}</h5> {/* Capitalize Name */}
                                 </div>
                             </div>
                         </div>
