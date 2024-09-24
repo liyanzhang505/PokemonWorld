@@ -5,19 +5,23 @@ pokemon_data_by_name = {}
 
 
 def get_pokemon_details(pokemon_url):
-    response = requests.get(pokemon_url)
-    if response.status_code != 200:
-        print(f"Error fetching details for {pokemon_url}")
+    try:
+        response = requests.get(pokemon_url)
+        response.raise_for_status()  # Raises an HTTPError for bad responses (4xx, 5xx)
+        return response.json()
+    except requests.RequestException as e:
+        print(f"Error fetching details for {pokemon_url}: {e}")
         return None
-    return response.json()
 
 
 def get_pokemon_species(pokemon_species_url):
-    response = requests.get(pokemon_species_url)
-    if response.status_code != 200:
-        print(f"Error fetching species details for {pokemon_species_url}")
+    try:
+        response = requests.get(pokemon_species_url)
+        response.raise_for_status()  # Raises an HTTPError for bad responses (4xx, 5xx)
+        return response.json()
+    except requests.RequestException as e:
+        print(f"Error fetching species details for {pokemon_species_url}: {e}")
         return None
-    return response.json()
 
 
 def get_pokemon_weaknesses(type_urls):
@@ -25,8 +29,9 @@ def get_pokemon_weaknesses(type_urls):
     resistances = set()
 
     for type_url in type_urls:
-        response = requests.get(type_url)
-        if response.status_code == 200:
+        try:
+            response = requests.get(type_url)
+            response.raise_for_status()
             data = response.json()
 
             for weakness in data['damage_relations']['double_damage_from']:
@@ -34,8 +39,12 @@ def get_pokemon_weaknesses(type_urls):
 
             for resistance in data['damage_relations']['half_damage_from']:
                 resistances.add(resistance['name'])
+
             for immunity in data['damage_relations']['no_damage_from']:
                 resistances.add(immunity['name'])
+        except requests.RequestException as e:
+            print(f"Error fetching type data from {type_url}: {e}")
+            continue
 
     final_weaknesses = weaknesses - resistances
     return list(final_weaknesses)
@@ -43,45 +52,48 @@ def get_pokemon_weaknesses(type_urls):
 
 # Optimized function to retrieve evolution chain using pokemon_data_by_name
 def get_evolution_chain(evolution_url):
-    response = requests.get(evolution_url)
-    if response.status_code != 200:
-        print(f"Error fetching evolution chain from {evolution_url}")
+    try:
+        response = requests.get(evolution_url)
+        response.raise_for_status()
+        data = response.json()
+
+        evolutions = []
+
+        # Traverse the evolution chain and match names to id and image_url from pokemon_data_by_name
+        def traverse_evolutions(chain):
+            species_name = chain['species']['name']
+
+            # Lookup id and image_url from the stored pokemon_data_by_name dictionary
+            if species_name in pokemon_data_by_name:
+                pokemon_info = pokemon_data_by_name[species_name]
+                evolutions.append({
+                    'id': str(pokemon_info['id']).zfill(4),  # Convert ID to 4-digit string
+                    'name': species_name,
+                    'image_url': pokemon_info['image_url']
+                })
+
+            for evolves_to in chain['evolves_to']:
+                traverse_evolutions(evolves_to)
+
+        traverse_evolutions(data['chain'])
+        return evolutions
+    except requests.RequestException as e:
+        print(f"Error fetching evolution chain from {evolution_url}: {e}")
         return None
-
-    data = response.json()
-    evolutions = []
-
-    # Traverse the evolution chain and match names to id and image_url from pokemon_data_by_name
-    def traverse_evolutions(chain):
-        species_name = chain['species']['name']
-
-        # Lookup id and image_url from the stored pokemon_data_by_name dictionary
-        if species_name in pokemon_data_by_name:
-            pokemon_info = pokemon_data_by_name[species_name]
-            evolutions.append({
-                'id': str(pokemon_info['id']).zfill(4),  # Convert ID to 4-digit string
-                'name': species_name,
-                'image_url': pokemon_info['image_url']
-            })
-
-        for evolves_to in chain['evolves_to']:
-            traverse_evolutions(evolves_to)
-
-    traverse_evolutions(data['chain'])
-    return evolutions
 
 
 def get_pokemon(offset=0, limit=2000):
     base_url = "https://pokeapi.co/api/v2/pokemon"
     all_pokemon_data = []
 
-    response = requests.get(f"{base_url}?limit={limit}&offset={offset}")
-    if response.status_code != 200:
-        print("Error fetching Pokemon list")
+    try:
+        response = requests.get(f"{base_url}?limit={limit}&offset={offset}")
+        response.raise_for_status()
+        data = response.json()
+        pokemon_list = data['results']
+    except requests.RequestException as e:
+        print(f"Error fetching Pokemon list: {e}")
         return None
-
-    data = response.json()
-    pokemon_list = data['results']
 
     # Fetch Pokemon data and store in pokemon_data_by_name for quick lookup
     for pokemon in pokemon_list:
