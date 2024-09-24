@@ -28,7 +28,7 @@ The project is built using the following technologies:
 ## Features
 
 ### List Page:
-- **Pagination**: The list page supports paginated viewing of Pokémon, with 20 Pokémon displayed per page.
+- **Pagination**: The list page supports paginated viewing of Pokémon, with 16 Pokémon displayed per page by default.
 - **Searching**: Users can search Pokémon by ID or name.
 - **Sorting**: Users can sort the Pokémon list by:
     - **ID**: Sort by Pokémon ID.
