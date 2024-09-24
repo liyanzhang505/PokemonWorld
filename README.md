@@ -55,12 +55,12 @@ The project is built using the following technologies:
      git clone https://github.com/liyanzhang505/PokemonWorld.git
      ```
 2. **Install the Required Dependencies**:
-   - Ensure you have Python 3 installed. You'll also need to install the required Python packages: Flask, Flask-CORS, and SQLite3.
+   - Ensure you have Python 3 installed. You'll also need to install the required Python packages: Flask, Flask-CORS.
 
    - To install these dependencies, run the following commands:
 
      ```bash
-     pip install flask flask-cors sqlite3
+     pip install flask flask-cors
 
 3. **Data Preparation**:
    The Pokémon data is fetched from an open-source API and cleaned before being stored in `pokemon.db`. Follow these steps to process the data:

@@ -22,7 +22,7 @@ These can be configured in the `config.py` file.
 - Ensure you have have Python 3.7+ installed on your system
 - Install the Required Dependencies:
    ```bash
-   pip install flask flask-cors sqlite3
+   pip install flask flask-cors
 - Do Data Preparation:
     - The Pokémon data is fetched from an open-source API and cleaned before being stored in `pokemon.db`. Follow these steps to process the data:
   
