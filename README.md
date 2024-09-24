@@ -20,7 +20,8 @@ The project is built using the following technologies:
 - **SQLite**: SQLite is used as the database to store Pokémon data that is fetched and cleaned from an open-source Pokémon API. This lightweight database provides fast and efficient data storage and retrieval.
 
 ### Frontend:
-- **React**: React is used to build a dynamic and responsive frontend. It interacts with the Flask backend to display Pokémon data.
+- **React**: React is used to build a dynamic and responsive frontend. It interacts with the Flask backend to display Pokémon data.- **React**: React is used to build a dynamic and responsive frontend. It interacts with the Flask backend to display Pokémon data.
+- **TypeScript**: Superset of JavaScript.
 - **Material-UI (MUI)**: Material-UI is used for building modern, customizable UI components for a better user experience.
 
 
