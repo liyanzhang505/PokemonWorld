@@ -129,6 +129,7 @@ The project is built using the following technologies:
 │       ├── save_data.py            # Script to save the cleaned data into the SQLite database
 │       └── test.py                 # Test script for validating data or processing logic
 ├── frontend                        # Frontend folder (React-based user interface)
+│   ├── .env                        # Configuration settings for the fronted app, including backend server IP, port, and the frontend server bind IP and port. 
 │   ├── package-lock.json           # Auto-generated: npm's exact version lock for dependencies
 │   ├── package.json                # Project metadata and npm dependencies for the frontend
 │   ├── public                      # Public folder for static files served by React (partly auto-generated)

@@ -5,6 +5,10 @@ import { Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { PokemonListResponse, Pokemon } from '../types';
 import './PokemonList.css';
 
+// Read configuration from .env
+const backendHost = process.env.REACT_APP_BACKEND_SERVER_IP;
+const backendPort = process.env.REACT_APP_BACKEND_SERVER_PORT;
+
 // Utility function to capitalize the first letter of a string
 const capitalizeFirstLetter = (str: string) => str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 
@@ -66,7 +70,7 @@ function PokemonList() {
         setLoading(true);  // Ensure loading state is set when fetching data
         try {
             const response = await axios.get<PokemonListResponse>(
-                `http://127.0.0.1:8080/pokemon/list?page=${page}&page_size=${pageSize}&order=${sortField}&direction=${sortOrder}&keyword=${searchKeyword}`
+                `http://${backendHost}:${backendPort}/pokemon/list?page=${page}&page_size=${pageSize}&order=${sortField}&direction=${sortOrder}&keyword=${searchKeyword}`
             );
             setPokemonList(response.data.data);
             setTotalPages(response.data.total_pages);

@@ -7,6 +7,10 @@ import { Bar } from 'react-chartjs-2';
 import 'chart.js/auto';
 import { PokemonDetails } from '../types';
 
+// Read configuration from .env
+const backendHost = process.env.REACT_APP_BACKEND_SERVER_IP;
+const backendPort = process.env.REACT_APP_BACKEND_SERVER_PORT;
+
 // Utility function to capitalise the first letter of a string
 const capitaliseFirstLetter = (str: string) => str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 
@@ -89,7 +93,7 @@ function PokemonDetailsPage() {
     // Fetch Pokemon data on component mount or when `id` changes
     useEffect(() => {
         if (id) {
-            axios.get<PokemonDetails>(`http://127.0.0.1:8080/pokemon/details/${id}`)
+            axios.get<PokemonDetails>(`http://${backendHost}:${backendPort}/pokemon/details/${id}`)
                 .then(response => {
                     setPokemon(response.data);
                     setLoading(false);
